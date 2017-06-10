@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <!--<context:component-scan base-package="com.zhi.util"/>-->
+
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxIdle" value="${redis.pool.maxIdle}"/>
+        <property name="maxTotal" value="${redis.pool.maxTotal}"/>
+        <property name="testOnBorrow" value="true"/>
+        <property name="testOnReturn" value="true"/>
+        <property name="maxWaitMillis" value="${redis.pool.maxWaitMillis}"/>
+    </bean>
+
+    <bean id="shardedJedisPool" class="redis.clients.jedis.ShardedJedisPool" scope="singleton">
+        <constructor-arg name="poolConfig" ref="jedisPoolConfig"/>
+        <constructor-arg name="shards">
+            <list>
+                <bean class="redis.clients.jedis.JedisShardInfo">
+                    <constructor-arg name="host" value="${redis.host}"/>
+                    <constructor-arg name="port" value="${redis.port}"/>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="jedisCluster" class="redis.clients.jedis.JedisCluster">
+        <constructor-arg name="nodes" ref="redisNodes"/>
+        <constructor-arg name="timeout" value="300"/>
+        <constructor-arg name="poolConfig" ref="jedisPoolConfig"/>
+    </bean>
+
+    <util:set id="redisNodes" set-class="java.util.HashSet">
+        <ref bean="redisNode0"/>
+        <ref bean="redisNode1"/>
+        <ref bean="redisNode2"/>
+        <ref bean="redisNode3"/>
+        <ref bean="redisNode4"/>
+        <ref bean="redisNode5"/>
+    </util:set>
+
+    <bean id="redisNode0" class="redis.clients.jedis.HostAndPort">
+        <constructor-arg name="host" value="192.168.0.103"/>
+        <constructor-arg name="port" value="6379"/>
+    </bean>
+
+    <bean id="redisNode1" class="redis.clients.jedis.HostAndPort">
+        <constructor-arg name="host" value="192.168.0.103"/>
+        <constructor-arg name="port" value="6380"/>
+    </bean>
+
+    <bean id="redisNode2" class="redis.clients.jedis.HostAndPort">
+        <constructor-arg name="host" value="192.168.0.103"/>
+        <constructor-arg name="port" value="6381"/>
+    </bean>
+
+    <bean id="redisNode3" class="redis.clients.jedis.HostAndPort">
+        <constructor-arg name="host" value="192.168.0.103"/>
+        <constructor-arg name="port" value="6382"/>
+    </bean>
+
+    <bean id="redisNode4" class="redis.clients.jedis.HostAndPort">
+        <constructor-arg name="host" value="192.168.0.103"/>
+        <constructor-arg name="port" value="6383"/>
+    </bean>
+
+    <bean id="redisNode5" class="redis.clients.jedis.HostAndPort">
+        <constructor-arg name="host" value="192.168.0.103"/>
+        <constructor-arg name="port" value="6384"/>
+    </bean>
+
+    <bean id="jedis" class="redis.clients.jedis.Jedis">
+        <constructor-arg name="host" value="192.168.0.103"/>
+        <constructor-arg name="port" value="6380"/>
+    </bean>
+
+    <bean id="shardedJedis" class="redis.clients.jedis.ShardedJedis">
+        <constructor-arg name="shards" ref="shardedJedisNodes"/>
+    </bean>
+
+    <util:list id="shardedJedisNodes" list-class="java.util.ArrayList">
+        <ref bean="jedisShardInfo0"/>
+        <ref bean="jedisShardInfo1"/>
+        <ref bean="jedisShardInfo2"/>
+        <ref bean="jedisShardInfo3"/>
+        <ref bean="jedisShardInfo4"/>
+        <ref bean="jedisShardInfo5"/>
+    </util:list>
+
+    <bean id="jedisShardInfo0" class="redis.clients.jedis.JedisShardInfo">
+        <constructor-arg name="host" value="192.168.0.103"/>
+        <constructor-arg name="port" value="6379"/>
+    </bean>
+
+    <bean id="jedisShardInfo1" class="redis.clients.jedis.JedisShardInfo">
+        <constructor-arg name="host" value="192.168.0.103"/>
+        <constructor-arg name="port" value="6380"/>
+    </bean>
+
+    <bean id="jedisShardInfo2" class="redis.clients.jedis.JedisShardInfo">
+        <constructor-arg name="host" value="192.168.0.103"/>
+        <constructor-arg name="port" value="6381"/>
+    </bean>
+
+    <bean id="jedisShardInfo3" class="redis.clients.jedis.JedisShardInfo">
+        <constructor-arg name="host" value="192.168.0.103"/>
+        <constructor-arg name="port" value="6382"/>
+    </bean>
+
+    <bean id="jedisShardInfo4" class="redis.clients.jedis.JedisShardInfo">
+        <constructor-arg name="host" value="192.168.0.103"/>
+        <constructor-arg name="port" value="6383"/>
+    </bean>
+
+    <bean id="jedisShardInfo5" class="redis.clients.jedis.JedisShardInfo">
+        <constructor-arg name="host" value="192.168.0.103"/>
+        <constructor-arg name="port" value="6384"/>
+    </bean>
+</beans>
